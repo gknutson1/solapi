@@ -2,3 +2,21 @@ html {
   background-color: darkgreen;
   color: antiquewhite;
 }
+
+.field {
+  display: grid;
+}
+
+.draw {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.discard {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.stack {}
+
+.fd {}

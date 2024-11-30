@@ -1,17 +1,36 @@
 ---
 import "../styles/global.css"
+import {card_back} from "../scripts/game";
+
+function genRange(size: number): number[] {
+	return Array(size).fill(0).map((x, y) => x + y)
+}
 
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Solapi</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<meta name="viewport" content="width=device-width" />
+	<meta name="generator" content={Astro.generator} />
+</head>
+<body>
+    <div class="field">
+	    <img src={card_back} alt="back of card" class="draw"/>
+	    { genRange(7).map(pos => <img src={card_back} alt="back of card" class=`stack stack-${pos}` style=`grid-column: ${pos}; grid-row: 1 / 4;`/>) }
+		{ genRange(4).map(pos => <img src={card_back} alt="empty pile" style=`grid-column: 8; grid-row: ${pos}`/>)}
+    </div>
+	<button>new game</button>
+	<button onclick="console.log(deck)">check</button>
+</body>
+
+<script is:inline>
+	var deck;
+</script>
+<script>
+	import { genDeck } from "../scripts/game";
+	document.querySelector("button").addEventListener("click", () => { deck = genDeck(); });
+</script>
+
 </html>
