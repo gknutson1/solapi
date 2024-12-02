@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css"
 import {CardBack, CardFrame} from "../scripts/objects";
+
 function genRange(start: number, size: number): number[] {
 	return Array(size).fill(start).map((x, y) => x + y)
 }
@@ -19,6 +20,7 @@ const suits = ["diamond", "heart", "club", "spade"]
 <body>
 	<div class="top-bar">
 		<button>new game</button>
+		<button onclick="console.log(deck)">check</button>
 	</div>
     <div class="field">
 	    <img src={CardBack} alt="blank space" id="stock" class="stock"/>
@@ -36,5 +38,9 @@ const suits = ["diamond", "heart", "club", "spade"]
 
     </div>
 </body>
+<script>
+	import { genDeck } from "../scripts/game";
+	document.querySelector("button").addEventListener("click", () => { genDeck(); });
+</script>
 
 </html>

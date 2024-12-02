@@ -1,29 +1,70 @@
-const base = "https://deckofcardsapi.com/api/deck";
-const card_back = "https://deckofcardsapi.com/static/img/back.png"
+import type {Base, Deck, DrawResponse, Card} from "./objects"
+import {CardBack, CardFrame, Offset} from "./objects"
 
-interface Deck {
-    success: boolean;
-    deck_id: string;
-    shuffled: boolean;
-    remaining: number;
+var id: string;
+
+async function call<Type extends Base>(str: string, id?: string, query?: Record<string, any>): Promise<Type> {
+    let url = "https://deckofcardsapi.com/api/deck";
+    if (id) { url += '/' + id }
+    url += str
+    if (query) {url += "?" + new URLSearchParams(query)}
+
+    function onFetch(data: Response): Promise<Base> {
+        return data.json().then(onJson, x => onJsonError(x, data))
+    }
+
+    function onFetchError(err: any): any {
+        console.error("Could not fetch \"" + url + "\" - received the following error: ", err)
+    }
+
+    function onJson(data: Type): Type {
+        if (! ('success' in data) || ! data.success) {
+            console.error("fetched and decoded \"" + url + "\" but parsed JSON response indicates failuer ir is malformed: ", data)
+        } else {
+            console.log("Request completed successfully", url, data)
+        }
+        return data
+    }
+
+    function onJsonError(err: any, data: Response): any {
+        console.error("fetched \"" + url + "\" but encountered a JSON decoding error: ", err, "while decoding this data as JSON: ", data.body)
+    }
+
+    return fetch(url).then(onFetch, onFetchError)
 }
 
+async function setupTableau(id: number, resp: DrawResponse) {
+    // @ts-ignore
+    let base: HTMLElement = document.getElementById("tableau-" + id);
+    // @ts-ignore
+    let card: Card = resp.cards.pop()
 
-
-async function getJson(str: string): Promise<any> {
-    return fetch(str).then(
-        res =>
-            res.json().then(
-                null,
-                _ => console.error("fetched \"" + str + "\" but could not resolve following data as json: " + res.body, res)
-            ),
-        res =>
-            console.error("could not fetch " + res.url, res)
-    )
+    for(let i = 1; i < id; i++) {
+        let element = document.createElement("img")
+        element.setAttribute("src", CardFrame)
+        element.setAttribute("class", "tableau")
+        element.setAttribute("alt", "blank space")
+        console.log(element)
+        base.append(element)
+    }
+    let element = document.createElement("img")
+    element.setAttribute("src", card.image)
+    element.setAttribute("class", "tableau")
+    element.setAttribute("alt", card.suit + " " + card.value)
+    console.log(element)
+    base.append(element)
 }
 
-async function genDeck(): Promise<Deck> {
-    return getJson(base + "/new/draw/?count=52")
+async function setupDeck(deck: Deck) {
+    id = deck.deck_id
+
+    for (let i = 1; i < 7; i++) {
+        call<DrawResponse>("/draw", id, { "count": i }).then(res => setupTableau(i, res), null)
+    }
 }
 
-export { genDeck, card_back };
+async function genDeck() {
+    call<Deck>("/new/shuffle").then(deck => setupDeck(deck))
+}
+
+export { genDeck };
