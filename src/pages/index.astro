@@ -1,10 +1,11 @@
 ---
 import "../styles/global.css"
-import {card_back} from "../scripts/game";
-
-function genRange(size: number): number[] {
-	return Array(size).fill(0).map((x, y) => x + y)
+import {CardBack, CardFrame} from "../scripts/objects";
+function genRange(start: number, size: number): number[] {
+	return Array(size).fill(start).map((x, y) => x + y)
 }
+
+const suits = ["diamond", "heart", "club", "spade"]
 
 ---
 
@@ -16,21 +17,24 @@ function genRange(size: number): number[] {
 	<meta name="generator" content={Astro.generator} />
 </head>
 <body>
+	<div class="top-bar">
+		<button>new game</button>
+	</div>
     <div class="field">
-	    <img src={card_back} alt="back of card" class="draw"/>
-	    { genRange(7).map(pos => <img src={card_back} alt="back of card" class=`stack stack-${pos}` style=`grid-column: ${pos}; grid-row: 1 / 4;`/>) }
-		{ genRange(4).map(pos => <img src={card_back} alt="empty pile" style=`grid-column: 8; grid-row: ${pos}`/>)}
-    </div>
-	<button>new game</button>
-	<button onclick="console.log(deck)">check</button>
-</body>
+	    <img src={CardBack} alt="blank space" id="stock" class="stock"/>
+		<img src={CardFrame} alt="blank space" id="waste" class="waste"/>
 
-<script is:inline>
-	var deck;
-</script>
-<script>
-	import { genDeck } from "../scripts/game";
-	document.querySelector("button").addEventListener("click", () => { deck = genDeck(); });
-</script>
+	    { genRange(2, 7).map(pos =>
+			<div id=`tableau-${pos - 1}` style=`grid-row: 1 / 4; grid-column: ${pos}`>
+				<img src={CardFrame} alt="blank space" class="tableau"/>
+			</div>
+		) }
+
+		{ suits.map((suit, pos) =>
+			<img src={`/frames/${suit}.png`} alt=`${suit} pile` id=`foundation-${suit}` class="foundation" style=`grid-row: ${pos + 1}`/>
+		) }
+
+    </div>
+</body>
 
 </html>

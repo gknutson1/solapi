@@ -3,20 +3,49 @@ html {
   color: antiquewhite;
 }
 
-.field {
-  display: grid;
+body {
+  --padding: 8px;
+  --buf: calc( var(--padding) * 2 );
+  margin: 0px var(--padding) var(--padding) var(--padding);
 }
 
-.draw {
+.top-bar {
+  height: calc(3em - var(--buf));
+  padding-top: var(--padding);
+  padding-bottom: var(--padding);
+  align-content: center;
+}
+
+.field {
+  --card-pad: 1em;
+  --rows: 4;
+  --cols: 9;
+  --max-height: calc(100vh - 3em - var(--padding) - ( var(--card-pad) * (var(--rows) - 1 )));
+  --max-width: calc(100vw - var(--buf) - ( var(--card-pad) * (var(--cols) - 1 )));
+  display: grid;
+  justify-content: space-between;
+  gap: var(--card-pad) var(--card-pad)
+}
+
+.card, .stock, .waste, .tableau, .foundation {
+  max-width: calc( var(--max-width) / var(--cols) );
+  max-height: calc( var(--max-height) / var(--rows) );
+}
+
+.stock {
   grid-column: 1;
   grid-row: 1;
 }
 
-.discard {
+.waste {
   grid-column: 1;
   grid-row: 2;
 }
 
-.stack {}
+.tableau {
+  grid-row: 1 / 4;
+}
 
-.fd {}
+.foundation {
+  grid-column: 9;
+}
