@@ -6,11 +6,12 @@ html {
 body {
   --padding: 8px;
   --buf: calc( var(--padding) * 2 );
+  --bar-height: 3em;
   margin: 0px var(--padding) var(--padding) var(--padding);
 }
 
 .top-bar {
-  height: calc(3em - var(--buf));
+  height: calc(var(--bar-height) - var(--buf));
   padding-top: var(--padding);
   padding-bottom: var(--padding);
   align-content: center;
@@ -20,8 +21,10 @@ body {
   --card-pad: 1em;
   --rows: 4;
   --cols: 9;
-  --max-height: calc(100vh - 3em - var(--padding) - ( var(--card-pad) * (var(--rows) - 1 )));
+  --window-height: calc(100vh - var(--bar-height) - var(--padding));
+  --max-height: calc(var(--window-height) - ( var(--card-pad) * (var(--rows) - 1 )));
   --max-width: calc(100vw - var(--buf) - ( var(--card-pad) * (var(--cols) - 1 )));
+  --card-spacing: calc(var(--window-height) / 5);
   display: grid;
   justify-content: space-between;
   gap: var(--card-pad) var(--card-pad)
@@ -44,6 +47,16 @@ body {
 
 .tableau {
   grid-row: 1 / 4;
+  height: min-content;
+}
+
+.tableau-base {
+  display: flex;
+  flex-direction: column;
+}
+
+.stacked {
+  margin-top: calc(var(--card-spacing) * -1);
 }
 
 .foundation {

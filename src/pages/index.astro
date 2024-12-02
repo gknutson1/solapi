@@ -27,9 +27,9 @@ const suits = ["diamond", "heart", "club", "spade"]
 		<img src={CardFrame} alt="blank space" id="waste" class="waste"/>
 
 	    { genRange(2, 7).map(pos =>
-			<div id=`tableau-${pos - 1}` style=`grid-row: 1 / 4; grid-column: ${pos}`>
-				<img src={CardFrame} alt="blank space" class="tableau"/>
+			<div id=`tableau-${pos - 1}` class="tableau tableau-base" style=`grid-column: ${pos}`>
 			</div>
+			<img src={CardFrame} alt="blank space" class="tableau" style=`grid-column: ${pos}`/>
 		) }
 
 		{ suits.map((suit, pos) =>

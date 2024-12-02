@@ -41,24 +41,28 @@ async function setupTableau(id: number, resp: DrawResponse) {
 
     for(let i = 1; i < id; i++) {
         let element = document.createElement("img")
-        element.setAttribute("src", CardFrame)
-        element.setAttribute("class", "tableau")
+        element.setAttribute("src", CardBack)
         element.setAttribute("alt", "blank space")
+        element.classList.add("tableau")
+        element.style.position = "relative"
+        if(i != 1) { element.classList.add("stacked") }
+
+        //element.style.marginTop = `-${Offset * (i - 1) * 5}px`
         console.log(element)
         base.append(element)
     }
-    let element = document.createElement("img")
-    element.setAttribute("src", card.image)
-    element.setAttribute("class", "tableau")
-    element.setAttribute("alt", card.suit + " " + card.value)
-    console.log(element)
-    base.append(element)
+    // let element = document.createElement("img")
+    // element.setAttribute("src", card.image)
+    // element.setAttribute("class", "tableau")
+    // element.setAttribute("alt", card.suit + " " + card.value)
+    // console.log(element)
+    // base.append(element)
 }
 
 async function setupDeck(deck: Deck) {
     id = deck.deck_id
 
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i <= 7; i++) {
         call<DrawResponse>("/draw", id, { "count": i }).then(res => setupTableau(i, res), null)
     }
 }

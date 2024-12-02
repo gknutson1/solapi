@@ -1,6 +1,6 @@
 const CardBack = "https://deckofcardsapi.com/static/img/back.png"
 const CardFrame = "/frames/base.png"
-const Offset = 50
+const Offset = 5
 
 interface Base {
     success: boolean
