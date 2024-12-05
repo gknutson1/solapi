@@ -39,24 +39,31 @@ async function setupTableau(id: number, resp: DrawResponse) {
     // @ts-ignore
     let card: Card = resp.cards.pop()
 
-    for(let i = 1; i < id; i++) {
-        let element = document.createElement("img")
-        element.setAttribute("src", CardBack)
-        element.setAttribute("alt", "blank space")
-        element.classList.add("tableau")
-        element.style.position = "relative"
-        if(i != 1) { element.classList.add("stacked") }
+    let cont = document.createElement("div");
+    cont.classList.add("stack-positioner")
 
-        //element.style.marginTop = `-${Offset * (i - 1) * 5}px`
-        console.log(element)
-        base.append(element)
+    let img = document.createElement("img")
+    img.setAttribute("alt", "back of card")
+    img.classList.add("stacked")
+
+    for(let i = 1; i < id; i++) {
+
+        // @ts-ignore
+        let activeCont: HTMLElement = cont.cloneNode()
+
+        // @ts-ignore
+        let activeImg: HTMLElement = img.cloneNode()
+        activeImg.setAttribute("src", resp.cards[i - 1].image)
+
+        activeCont.append(activeImg)
+        base.append(activeCont)
     }
-    // let element = document.createElement("img")
-    // element.setAttribute("src", card.image)
-    // element.setAttribute("class", "tableau")
-    // element.setAttribute("alt", card.suit + " " + card.value)
-    // console.log(element)
-    // base.append(element)
+
+    img.setAttribute("src", card.image)
+    img.setAttribute("alt", card.suit + " " + card.value)
+
+    cont.append(img)
+    base.append(cont)
 }
 
 async function setupDeck(deck: Deck) {

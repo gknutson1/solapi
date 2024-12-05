@@ -24,7 +24,6 @@ body {
   --window-height: calc(100vh - var(--bar-height) - var(--padding));
   --max-height: calc(var(--window-height) - ( var(--card-pad) * (var(--rows) - 1 )));
   --max-width: calc(100vw - var(--buf) - ( var(--card-pad) * (var(--cols) - 1 )));
-  --card-spacing: calc(var(--window-height) / 5);
   display: grid;
   justify-content: space-between;
   gap: var(--card-pad) var(--card-pad)
@@ -47,16 +46,23 @@ body {
 
 .tableau {
   grid-row: 1 / 4;
-  height: min-content;
 }
 
 .tableau-base {
-  display: flex;
-  flex-direction: column;
+  grid-row: 1 / 5;
+  max-width: calc( var(--max-width) / var(--cols) );
+  position: relative;
+}
+
+.stack-positioner {
+  height: 6%;
+  width: 100%;
 }
 
 .stacked {
-  margin-top: calc(var(--card-spacing) * -1);
+  height: auto;
+  width: 100%;
+  position: absolute;
 }
 
 .foundation {
