@@ -3,6 +3,28 @@ import {CardBack, CardFrame, Offset} from "./objects"
 
 var id: string;
 
+class Lock {
+    count = 0
+    inactive = "Ready"
+    active = "Please Wait"
+
+    release() {
+        if (this.count > 0) { this.count--; }
+        if (this.count <= 0) { // @ts-ignore
+            document.querySelector(".status").textContent = this.inactive
+        }
+    }
+
+    take() {
+        this.count++
+        if (this.count > 0) { // @ts-ignore
+            document.querySelector(".status").textContent = this.active
+        }
+    }
+}
+
+const lock = new Lock()
+
 async function call<Type extends Base>(str: string, id?: string, query?: Record<string, any>): Promise<Type> {
     let url = "https://deckofcardsapi.com/api/deck";
     if (id) { url += '/' + id }
@@ -10,10 +32,12 @@ async function call<Type extends Base>(str: string, id?: string, query?: Record<
     if (query) {url += "?" + new URLSearchParams(query)}
 
     function onFetch(data: Response): Promise<Base> {
+        lock.release()
         return data.json().then(onJson, x => onJsonError(x, data))
     }
 
     function onFetchError(err: any): any {
+        lock.release()
         console.error("Could not fetch \"" + url + "\" - received the following error: ", err)
     }
 
@@ -30,6 +54,7 @@ async function call<Type extends Base>(str: string, id?: string, query?: Record<
         console.error("fetched \"" + url + "\" but encountered a JSON decoding error: ", err, "while decoding this data as JSON: ", data.body)
     }
 
+    lock.take()
     return fetch(url).then(onFetch, onFetchError)
 }
 
@@ -78,4 +103,12 @@ async function genDeck() {
     call<Deck>("/new/shuffle").then(deck => setupDeck(deck))
 }
 
-export { genDeck };
+async function load() {
+    // @ts-ignore
+    document.querySelector(".start").addEventListener("click", () => { genDeck(); });
+
+    // @ts-ignore
+    document.querySelector(".reset").addEventListener("click", () => { location.reload() ; });
+}
+
+export { load }

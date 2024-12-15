@@ -16,11 +16,15 @@ const suits = ["diamond", "heart", "club", "spade"]
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 	<meta name="viewport" content="width=device-width" />
 	<meta name="generator" content={Astro.generator} />
+	<title>Solapi</title>
 </head>
 <body>
 	<div class="top-bar">
-		<button>new game</button>
-		<button onclick="console.log(deck)">check</button>
+		<button class="start">new game</button>
+		<div class="dash-line"></div>
+		<div class="status">Game not started</div>
+		<div class="dash-line"></div>
+		<button class="reset">reset</button>
 	</div>
     <div class="field">
 	    <img src={CardBack} alt="blank space" id="stock" class="stock"/>
@@ -38,8 +42,7 @@ const suits = ["diamond", "heart", "club", "spade"]
     </div>
 </body>
 <script>
-	import { genDeck } from "../scripts/game";
-	document.querySelector("button").addEventListener("click", () => { genDeck(); });
+	import { load } from "../scripts/game";
+	load()
 </script>
-
 </html>

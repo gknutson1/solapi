@@ -1,6 +1,7 @@
 html {
   background-color: #35654d;
   color: antiquewhite;
+  font-family: Noto Sans, serif
 }
 
 body {
@@ -11,10 +12,19 @@ body {
 }
 
 .top-bar {
+  display: flex;
+  align-items: center;
   height: calc(var(--bar-height) - var(--buf));
   padding-top: var(--padding);
   padding-bottom: var(--padding);
-  align-content: center;
+  white-space: nowrap;
+}
+
+.dash-line {
+  width: 50%;
+  border-top: 3px solid #264334;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
 .field {
@@ -55,7 +65,7 @@ body {
 }
 
 .stack-positioner {
-  height: 6%;
+  height: 7%;
   width: 100%;
 }
 
