@@ -101,6 +101,8 @@ function moveFromTableau(target: HTMLElement) {
         // @ts-ignore
         selected.classList.remove("selected");
         selected = null
+    } else if (target.parentElement) {
+
     }
 }
 
@@ -136,18 +138,22 @@ const cardOrder: Map<string, number> = new Map([
 ])
 
 function verifyMove(target: string, moving: string) {
+    console.log(`checking if ${moving} to ${target} is valid`)
     if (target[1] == 'D' || target[1] == 'H') {
         if (moving[1] != 'C' && moving[1] != 'S') {
+            console.log(false)
             return false;
         }
     } else if (target[1] == 'C' || target[1] == 'S') {
         if (moving[1] != 'D' && moving[1] != 'H') {
+            console.log(false)
             return false;
         }
     }
     let targetOrder = cardOrder.get(target[0]);
     let sourceOrder = cardOrder.get(moving[0]);
-
+    // @ts-ignore
+    console.log(sourceOrder == (targetOrder + 1))
     // @ts-ignore
     return sourceOrder == (targetOrder + 1);
 
@@ -199,6 +205,42 @@ async function setupDeck(deck: Deck) {
     }
 }
 
+let wastePile: string[] = []
+let remains = 1
+
+async function onStockSelected() {
+    if (remains == 0) {
+        let data = await call<DrawResponse>("/return", id, { "cards": wastePile.reverse() })
+        remains = data.remaining
+        wastePile = []
+        // @ts-ignore
+        const stock: HTMLElement = document.getElementById("stock");
+        stock.setAttribute("src", CardBack)
+        return
+    }
+
+    await call<DrawResponse>("/draw", id, { "count": 1 }).then(res => {
+        remains = res.remaining
+        const empty = "blank space"
+        const card = res.cards[0]
+        // @ts-ignore
+        const waste: HTMLElement = document.getElementById("waste");
+        if (waste.getAttribute("alt") != empty) {
+            wastePile.unshift(<string>waste.getAttribute("alt"));
+        }
+        waste.setAttribute("src", card.image)
+        waste.setAttribute("alt", card.code)
+
+    })
+
+
+    if (remains == 0) {
+        // @ts-ignore
+        document.getElementById("stock").setAttribute("src", CardFrame)
+    }
+    console.log(wastePile)
+}
+
 async function load() {
     // @ts-ignore
     document.querySelector(".start").addEventListener("click", async () => {
@@ -209,6 +251,8 @@ async function load() {
 
     // @ts-ignore
     document.querySelector(".reset").addEventListener("click", () => { location.reload() ; });
+    // @ts-ignore
+    document.getElementById("stock").addEventListener("click", async () => {onStockSelected()})
 }
 
 export { load }
