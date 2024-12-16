@@ -4,6 +4,9 @@ import {CardBack, CardFrame, Offset} from "./objects"
 var id: string;
 let game_started = false;
 
+//-----------------//
+// Utility methods //
+//-----------------//
 class Lock {
     count = 0
     inactive = "Ready"
@@ -59,6 +62,78 @@ async function call<Type extends Base>(str: string, id?: string, query?: Record<
     return fetch(url).then(onFetch, onFetchError)
 }
 
+let selected: HTMLElement | null = null;
+
+function select(ev: MouseEvent) {
+    let target = ev.target as HTMLElement
+    console.log("selected: ", target, "previous element was: ", selected)
+    if (selected == null) { // If selected is null, make target active
+        selected = target;
+        target.classList.add("selected");
+    } else if (selected == target) { // If same element is selected, deactivate target
+        selected = null;
+        target.classList.remove("selected");
+    } else { // If different element
+        // @ts-ignore
+        if (selected.parentElement.parentElement.id.startsWith('tableau')) {
+            moveFromTableau(target) // Handle when source is in the tableau
+        }
+    }
+}
+
+function moveFromTableau(target: HTMLElement) {
+    // @ts-ignore
+    if(target.parentElement.parentElement.id.startsWith('tableau')) {
+        // If we are moving from tableau to different section of tableau
+        // @ts-ignore
+        if(verifyMove(target.getAttribute("alt"), selected?.getAttribute("alt"))) {
+
+        } else{
+            // @ts-ignore
+            selected.classList.remove("selected");
+            selected == null
+        }
+    }
+}
+
+const cardOrder: Map<string, number> = new Map([
+    ["A", 1],
+    ["K", 2],
+    ["Q", 3],
+    ["J", 4],
+    ["0", 5],
+    ["9", 6],
+    ["8", 7],
+    ["7", 8],
+    ["6", 9],
+    ["5", 10],
+    ["4", 11],
+    ["3", 12],
+    ["2", 13],
+    ["1", 14]
+])
+
+function verifyMove(target: string, moving: string) {
+    if (target[1] == 'D' || target[1] == 'H') {
+        if (moving[1] != 'C' && moving[1] != 'S') {
+            return false;
+        }
+    } else if (target[1] == 'C' || target[1] == 'S') {
+        if (moving[1] != 'D' && moving[1] != 'H') {
+            return false;
+        }
+    }
+    let targetOrder = cardOrder.get(target[0]);
+    let sourceOrder = cardOrder.get(moving[0]);
+
+    // @ts-ignore
+    return sourceOrder == (targetOrder + 1);
+
+}
+
+//-----------------//
+// Setup functions //
+//-----------------//
 async function setupTableau(id: number, resp: DrawResponse) {
     // @ts-ignore
     let base: HTMLElement = document.getElementById("tableau-" + id);
