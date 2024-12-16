@@ -20,6 +20,10 @@ body {
   white-space: nowrap;
 }
 
+.selected {
+  border: 4px solid yellow;
+}
+
 .dash-line {
   width: 50%;
   border-top: 3px solid #264334;
