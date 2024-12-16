@@ -87,12 +87,13 @@ function moveFromTableau(target: HTMLElement) {
         // If we are moving from tableau to different section of tableau
         // @ts-ignore
         if(verifyMove(target.getAttribute("alt"), selected?.getAttribute("alt"))) {
-
-        } else{
             // @ts-ignore
-            selected.classList.remove("selected");
-            selected == null
+            target.parentElement.parentElement.appendChild(selected?.parentElement)
+        } else{
         }
+        // @ts-ignore
+        selected.classList.remove("selected");
+        selected = null
     }
 }
 
