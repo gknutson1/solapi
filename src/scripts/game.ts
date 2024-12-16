@@ -87,8 +87,28 @@ function moveFromTableau(target: HTMLElement) {
         // If we are moving from tableau to different section of tableau
         // @ts-ignore
         if(verifyMove(target.getAttribute("alt"), selected?.getAttribute("alt"))) {
+            // If our move is actually valid
+            // @ts-ignore
+            let tableau = selected.parentElement.parentElement
+            console.log(tableau)
+            // Do the move
             // @ts-ignore
             target.parentElement.parentElement.appendChild(selected?.parentElement)
+            console.log(tableau)
+
+            // @ts-ignore
+            const childCount = tableau.children.length
+            // @ts-ignore
+            let nextCard = tableau.children[childCount - 1]
+            if (nextCard != null) { nextCard = nextCard.children[0]}
+
+            console.log("next card: ", nextCard)
+
+            if (nextCard == null) {}
+            else if (nextCard.getAttribute("src") == CardBack) {
+                nextCard.setAttribute("src", `https://deckofcardsapi.com/static/img/${nextCard.getAttribute("alt")}.png`)
+            }
+
         } else{
         }
         // @ts-ignore
