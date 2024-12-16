@@ -2,6 +2,7 @@ import type {Base, Deck, DrawResponse, Card} from "./objects"
 import {CardBack, CardFrame, Offset} from "./objects"
 
 var id: string;
+let game_started = false;
 
 class Lock {
     count = 0
@@ -78,14 +79,16 @@ async function setupTableau(id: number, resp: DrawResponse) {
 
         // @ts-ignore
         let activeImg: HTMLElement = img.cloneNode()
-        activeImg.setAttribute("src", resp.cards[i - 1].image)
+        activeImg.setAttribute("src", CardBack)
+        activeImg.setAttribute("alt", resp.cards[i - 1].code)
 
         activeCont.append(activeImg)
         base.append(activeCont)
-    }
+        }
 
     img.setAttribute("src", card.image)
-    img.setAttribute("alt", card.suit + " " + card.value)
+    img.setAttribute("alt", card.code)
+    img.addEventListener("click", select)
 
     cont.append(img)
     base.append(cont)
@@ -99,13 +102,13 @@ async function setupDeck(deck: Deck) {
     }
 }
 
-async function genDeck() {
-    call<Deck>("/new/shuffle").then(deck => setupDeck(deck))
-}
-
 async function load() {
     // @ts-ignore
-    document.querySelector(".start").addEventListener("click", () => { genDeck(); });
+    document.querySelector(".start").addEventListener("click", async () => {
+        if (game_started) { location.reload(); return }
+        game_started = true;
+        call<Deck>("/new/shuffle").then(deck => setupDeck(deck))
+    });
 
     // @ts-ignore
     document.querySelector(".reset").addEventListener("click", () => { location.reload() ; });
