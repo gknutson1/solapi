@@ -97,20 +97,19 @@ function moveFromTableau(target: HTMLElement) {
 }
 
 const cardOrder: Map<string, number> = new Map([
-    ["A", 1],
-    ["K", 2],
-    ["Q", 3],
-    ["J", 4],
-    ["0", 5],
-    ["9", 6],
-    ["8", 7],
-    ["7", 8],
-    ["6", 9],
-    ["5", 10],
-    ["4", 11],
-    ["3", 12],
-    ["2", 13],
-    ["1", 14]
+    ["K", 1],
+    ["Q", 2],
+    ["J", 3],
+    ["0", 4],
+    ["9", 5],
+    ["8", 6],
+    ["7", 7],
+    ["6", 8],
+    ["5", 9],
+    ["4", 10],
+    ["3", 11],
+    ["2", 12],
+    ["A", 13]
 ])
 
 function verifyMove(target: string, moving: string) {
