@@ -2,6 +2,11 @@
 
 A game of solitare, built off of astro and the [Deck of Cards API](https://deckofcardsapi.com/).
 
+## How to play
+Click on a card to select it. Delete it again to unselect it.
+Click on a different card while a card is selected to make a move. 
+Cards cannot be dragged.
+
 ## Citations
 
 Card images sourced from 
