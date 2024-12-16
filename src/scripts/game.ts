@@ -4,6 +4,9 @@ import {CardBack, CardFrame, Offset} from "./objects"
 var id: string;
 let game_started = false;
 
+let wastePile: string[] = []
+let remains = 1
+
 //-----------------//
 // Utility methods //
 //-----------------//
@@ -83,10 +86,10 @@ function select(ev: MouseEvent) {
 
 function moveFromTableau(target: HTMLElement) {
     // @ts-ignore
-    if(target.parentElement.parentElement.id.startsWith('tableau')) {
+    if (target.parentElement.parentElement.id.startsWith('tableau')) {
         // If we are moving from tableau to different section of tableau
         // @ts-ignore
-        if(verifyMove(target.getAttribute("alt"), selected?.getAttribute("alt"))) {
+        if (verifyMove(target.getAttribute("alt"), selected?.getAttribute("alt"))) {
             // If our move is actually valid
             // @ts-ignore
             let tableau = selected.parentElement.parentElement
@@ -96,13 +99,24 @@ function moveFromTableau(target: HTMLElement) {
             target.parentElement.parentElement.appendChild(selected?.parentElement)
             // @ts-ignore
             reveal(tableau)
-        } else{
         }
+
+
         // @ts-ignore
         selected.classList.remove("selected");
         selected = null
-    } else if (target.parentElement) {
-
+    }
+    // @ts-ignore
+    if (target.classList.contains("foundation")) {
+        // @ts-ignore
+        target.setAttribute("src", selected?.getAttribute("src"))
+        // @ts-ignore
+        let tbl = selected.parentElement.parentElement;
+        // @ts-ignore
+        selected.parentElement.remove()
+        selected = null
+        console.log(tbl)
+        reveal(tbl)
     }
 }
 
@@ -205,9 +219,6 @@ async function setupDeck(deck: Deck) {
     }
 }
 
-let wastePile: string[] = []
-let remains = 1
-
 async function onStockSelected() {
     if (remains == 0) {
         let data = await call<DrawResponse>("/return", id, { "cards": wastePile.reverse() })
@@ -253,6 +264,8 @@ async function load() {
     document.querySelector(".reset").addEventListener("click", () => { location.reload() ; });
     // @ts-ignore
     document.getElementById("stock").addEventListener("click", async () => {onStockSelected()})
+    document.querySelectorAll(".foundation").forEach((element) => { // @ts-ignore
+        element.addEventListener("click", select)})
 }
 
 export { load }
